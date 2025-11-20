@@ -110,6 +110,10 @@ num_patients_2xMCID_uirrit / length(na.omit(epic_uirrit_diff_at_2_yrs)) # propor
 tox_df_list$`Pt ID`$`Length of Follow-up` %>% summary() / 30.436875 # in months
 tox_df_list$`Pt ID`$`Length of Follow-up` %>% summary() # in days
 
+
+
+
+
 # # merge "Low risk" and "low risk" with "Low Risk"
 # pro_df_list$`Pt ID`$`Risk Status` <- recode(pro_df_list$`Pt ID`$`Risk Status`,
 #                                                "Low risk" = "Low Risk",
