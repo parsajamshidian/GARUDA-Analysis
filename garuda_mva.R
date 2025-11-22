@@ -35,7 +35,17 @@ garuda_detail_df_list <- map(sheets, function(sheet_name) {
 
 names(garuda_detail_df_list) <- sheets
 
-garuda_detail_df_list$`GARUDA HIGH RISK TAB`
+# Convert Dates
+garuda_detail_df_list$`GARUDA HIGH RISK TAB` %>% mutate(
+  Date_RT_Start = case_when(
+    # numeric Excel serials
+    suppressWarnings(!is.na(as.numeric(Date_RT_Start))) ~
+      as.Date(as.numeric(Date_RT_Start), origin = "1899-12-30"),
+    
+    # parse text dates like "8/6/2021"
+    TRUE ~ mdy(Date_RT_Start)
+  )
+) %>% select(Date_RT_Start)
 
 # Match names
 names(garuda_detail_df_list$`GARUDA HIGH RISK TAB`)[36] <- "Fractionation?"
@@ -74,13 +84,7 @@ late_tox_long_df <- tox_df %>% left_join(garuda_detail_df, by = "MRN")
 
 # Create survival indicator of the first timepoint where Late GU or Late GI is >=2
 late_tox_long_df1 <- late_tox_long_df %>% group_by(MRN) %>% 
-  arrange(match(Timepoint, c("6 months", "12 months", "18 months", "24 months"))) %>%
-  mutate(
-    Late_GU_Event = ifelse(`Late GU` %in% c(2,3,4,5), 1, 0),
-    Late_GI_Event = ifelse(`Late GI` %in% c(2,3,4,5), 1, 0),
-  ) %>%
-  ungroup()
-
+  
 
 
 pro_df_list$`All PRO Data` %>% group_by(`REDCap Record ID`) %>% filter(!is.na(`Urinary irritative summary score`)) %>% count()
